@@ -28,25 +28,22 @@ class DiagnosticReport():
             return "0"
         return min(set(List), key = List.count)
 
-    @property
-    def oxygen_rating(self):
+    def _get_rating(self, method):
         matches = self.readings
         index = 0
         while len(matches) > 1:
             for n in range(len(matches[0])):
-                baseline = self.most_bits(matches)
+                baseline = method(matches)
                 matches = [ x for x in matches if x[n] == baseline[n]]
         return int(matches[0],2)
 
     @property
+    def oxygen_rating(self):
+        return self._get_rating(self.most_bits)
+
+    @property
     def scrubber_rating(self):
-        matches = self.readings
-        index = 0
-        while len(matches) > 1:
-            for n in range(len(matches[0])):
-                baseline = self.least_bits(matches)
-                    matches = [ x for x in matches if x[n] == baseline[n]]
-        return int(matches[0],2)
+        return self._get_rating(self.least_bits)
 
     @property
     def life_support_rating(self):
